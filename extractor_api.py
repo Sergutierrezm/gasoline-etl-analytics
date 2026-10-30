@@ -11,9 +11,24 @@ def extraer_gasolineras():
         respuesta = requests.get(url, timeout=15)
         respuesta.raise_for_status()
 
+        # Extraemos la lista de estaciones desde el JSON
+        datos_json = respuesta.json()
+        lista_gasolineras = datos_json.get("ListaEESSPrecio", [])
+
+        #Convertimos a DataFrame
+        df = pd.DataFrame(lista_gasolineras)
+        print(f"Extracción completada: {len(df)} registros obtenidos.")
+        return df
 
 
-
-
-    except:
+    except requests.exceptions.RequestException as e:
+        print(f"Error en la conexión con la API: {e}")
+    
+        return None
+    
+    except Exception as e:
+    
+        print(f"Error al procesar la respuesta: {e}")
+    
+        return None
         
